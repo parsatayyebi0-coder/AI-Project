@@ -4,6 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+transcript = str()
+language_to_translate_into = str()
+
+def set_ai_input(script, language):
+    global transcript, language_to_translate_into
+    transcript = str(script)
+    language_to_translate_into = str(language)
+
 def run_gemini_3_lite():
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
     model_id = "gemini-3-flash-preview" 
@@ -11,7 +19,7 @@ def run_gemini_3_lite():
     try:
         response = client.models.generate_content(
             model=model_id,
-            contents=""
+            contents="In the following transcript of a youtube video remove all sponsorship messages and create a summarized list of the topics covered in the transcript. Only return a list of said topics in " + language_to_translate_into + ". The following is the transcript: " + transcript
         )
         print(response.text)
 
@@ -19,4 +27,5 @@ def run_gemini_3_lite():
         print(f"Error: {e}")
 
 if __name__ == "__main__":
+    set_ai_input(transcript, language_to_translate_into) #change variables to needed input
     run_gemini_3_lite()
